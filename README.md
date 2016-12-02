@@ -10,9 +10,9 @@ Inspired by Ruby on Rails’ [`model.errors.messages`](http://guides.rubyonrails
 ## Usage
 
 ``` clojure
-(ns my-namespace
-  (:require [nudge.core as n]
-            [nudge.defaults]))
+(ns foo
+  (:require [clojure.spec :as s]
+            [nudge.core as n]))
 
 (def email-regex #"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,63}$")
 (s/def ::email-type (s/and string? #(re-matches email-regex %)))
@@ -23,16 +23,46 @@ Inspired by Ruby on Rails’ [`model.errors.messages`](http://guides.rubyonrails
 (n/def ::email-type "must be a valid email address")
 (s/def ::email ::email-type)
 
-;; the message for string? is defined in nudge.defaults
-(s/def ::name string?)
+(s/def ::person
+  (s/keys :req [::name ::email]))
 
+;; An invalid map
 (n/messages ::person {::name 1 ::email "not-a-valid-email"})
 ;; => {::name [“must be a string”]
 ;;     ::email [“must be a valid email address”]}
 
+;; A valid map
 (n/messages ::person {::name “John Smith” ::email "john@example.com"})
 ;; => nil
 ```
+
+## Clojure (JVM) Only Features
+
+In Clojure, messages can be defined using not only keywords but also
+symbols. This allows default messages to be defined using symbols that
+resolve to predicates, like so:
+
+``` clojure
+(ns foo
+  (:require [clojure.spec :as s]
+            [nudge.core as n]))
+
+(n/def string? “must be a string”)
+(s/def ::name string?)
+(n/messages ::name 123) ; => “must be a string”
+```
+
+A handful of these defaults are defined in `nudge.defaults` and
+can be initialized by requiring that namespace:
+
+``` clojure
+(ns foo
+  (:require [nudge.core as n]
+            [nudge.defaults]))
+```
+
+ClojureScript will gain this functionality
+once [CLJ-2059](http://dev.clojure.org/jira/browse/CLJ-2059) is resolved.
 
 ## License
 

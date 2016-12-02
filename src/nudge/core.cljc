@@ -102,15 +102,36 @@
 ;; ---------------------------
 ;; ORIGINAL
 
+#?(:clj
+   (defn- resolve-and-get-spec
+     [k]
+     (-> (if (symbol? k) (resolve k) k)
+         get-spec)))
+
+#?(:clj (defn problem->spec
+          [e]
+          (let [req-missing (empty? (:path e))]
+            (c/or (if req-missing (resolve-and-get-spec 'contains?))
+                  (get-spec (-> e :via last))
+                  (resolve-and-get-spec (:pred e)))))
+   :cljs (defn problem->spec
+           [e]
+           (let [req-missing (empty? (:path e))]
+             (c/or (if req-missing (get-spec 'contains?))
+                   (get-spec (-> e :via last)) ;; already resolved
+                   (get-spec (:pred e))))))
+
+(defn- problem->msg
+  [e]
+  (let [prop (c/or (get-in e [:path 0])
+                   (-> e :pred last))
+        spec (problem->spec e)]
+    {prop [spec]}))
+
 (defn messages
   [spec data]
   (->> (s/explain-data spec data)
        #?(:clj  :clojure.spec/problems
           :cljs :cljs.spec/problems)
-       (map #(let [missing (empty? (:path %))
-                   prop (c/or (get-in % [:path 0])
-                              (-> % :pred last))]
-               {prop [(c/or (if missing "can't be blank")
-                            (get-spec (-> % :via last))
-                            (get-spec (:pred %)))]}))
+       (map problem->msg)
        (apply merge)))
