@@ -102,30 +102,25 @@
 ;; ---------------------------
 ;; ORIGINAL
 
-#?(:clj
-   (defn- resolve-and-get-spec
-     [k]
-     (-> (if (symbol? k) (resolve k) k)
-         get-spec)))
+#?(:clj (defn- resolve-and-get-spec
+          [k]
+          (-> (if (symbol? k) (resolve k) k)
+              get-spec)))
 
-#?(:clj (defn problem->spec
-          [e]
-          (let [req-missing (empty? (:path e))]
-            (c/or (if req-missing (resolve-and-get-spec 'contains?))
-                  (get-spec (-> e :via last))
-                  (resolve-and-get-spec (:pred e)))))
-   :cljs (defn problem->spec
-           [e]
-           (let [req-missing (empty? (:path e))]
-             (c/or (if req-missing (get-spec 'contains?))
-                   (get-spec (-> e :via last)) ;; already resolved
-                   (get-spec (:pred e))))))
+(defn problem->spec
+  [prob]
+  (let [req-missing (empty? (:path prob))]
+    (c/or (if req-missing (get-spec 'nudge.defaults/key-missing))
+          (get-spec (-> prob :via last))
+          #?(:clj  (resolve-and-get-spec (:pred prob))
+             :cljs (get-spec (:pred prob)))
+          (get-spec 'nudge.defaults/default))))
 
 (defn- problem->msg
-  [e]
-  (let [prop (c/or (get-in e [:path 0])
-                   (-> e :pred last))
-        spec (problem->spec e)]
+  [prob]
+  (let [prop (c/or (get-in prob [:path 0])
+                   (-> prob :pred last))
+        spec (problem->spec prob)]
     {prop [spec]}))
 
 (defn messages

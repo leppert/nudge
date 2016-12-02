@@ -1,6 +1,7 @@
 (ns nudge.test-runner
  (:require [doo.runner :refer-macros [doo-tests]]
            [nudge.core-test]
+           [nudge.defaults-test]
            [cljs.nodejs :as nodejs]))
 
 (try
@@ -8,4 +9,5 @@
   (catch :default _))
 
 (doo-tests
- 'nudge.core-test)
+ 'nudge.core-test
+ 'nudge.defaults-test)

@@ -12,14 +12,15 @@ Inspired by Ruby on Rails’ [`model.errors.messages`](http://guides.rubyonrails
 ``` clojure
 (ns foo
   (:require [clojure.spec :as s]
-            [nudge.core as n]))
+            [nudge.core as n]
+            [nudge.defaults]))
 
 (def email-regex #"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,63}$")
 (s/def ::email-type (s/and string? #(re-matches email-regex %)))
 
 ;; nudge.core/def defines the nudge message to be returned in the
 ;; event the data structure fails to pass the spec.
-;; Nudge keeps a global registry of these messages, just like specs.
+;; Nudge keeps a global registry of these messages, just like clojure.spec.
 (n/def ::email-type "must be a valid email address")
 (s/def ::email ::email-type)
 
@@ -27,13 +28,39 @@ Inspired by Ruby on Rails’ [`model.errors.messages`](http://guides.rubyonrails
   (s/keys :req [::name ::email]))
 
 ;; An invalid map
-(n/messages ::person {::name 1 ::email "not-a-valid-email"})
-;; => {::name [“must be a string”]
+(n/messages ::person {::email "not-a-valid-email"})
+;; => {::name [“must be present”]
 ;;     ::email [“must be a valid email address”]}
 
 ;; A valid map
 (n/messages ::person {::name “John Smith” ::email "john@example.com"})
 ;; => nil
+```
+
+## Defaults
+
+Default messages are defined in `nudge.defaults` and can be
+initialized by requiring the namespace. ex:
+
+``` clojure
+(ns foo
+  (:require [nudge.core :as n]
+            [nudge.defaults]))
+```
+
+Both the Clojure and ClojureScript implementations provide two special
+default symbols that can be overridden:
+
+- `nudge.defaults/default`: returned when no message has been
+specified for a failing predicate
+- `nudge.defaults/key-missing`: returned when a map key has been
+  specified as required in a map spec but that key is missing
+
+When redefining these keys, use the fully qualified symbol, like
+so:
+
+``` clojure
+(n/def nudge.defaults/default "did not meet a requirement")
 ```
 
 ## Clojure (JVM) Only Features
@@ -52,14 +79,7 @@ resolve to predicates, like so:
 (n/messages ::name 123) ; => “must be a string”
 ```
 
-A handful of these defaults are defined in `nudge.defaults` and
-can be initialized by requiring that namespace:
-
-``` clojure
-(ns foo
-  (:require [nudge.core as n]
-            [nudge.defaults]))
-```
+A handful of these are defined as defaults in `nudge.defaults`.
 
 ClojureScript will gain this functionality
 once [CLJ-2059](http://dev.clojure.org/jira/browse/CLJ-2059) is resolved.

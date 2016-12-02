@@ -1,6 +1,7 @@
 (ns nudge.core-test
-  (:require [nudge.core :as n]
-            [clojure.spec :as s]
+  (:require [clojure.spec :as s]
+            [nudge.core :as n]
+            [nudge.defaults]
             #?@(:clj  [[clojure.test :refer :all]]
                 :cljs [[cljs.test :refer-macros [deftest is testing]]])))
 
