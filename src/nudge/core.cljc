@@ -39,20 +39,12 @@
       (conj (walk/postwalk-replace {s '%} form) '[%] 'fn))
     expr))
 
-#?(:clj
-   (defn- res [form]
-     (cond
-       (keyword? form) form
-       (symbol? form) (c/or (-> form resolve ->sym) form)   
-       (sequential? form) (walk/postwalk #(if (symbol? %) (res %) %) (unfn form))
-       :else form))
-   :cljs
-   (defn- res [env form]
-     (cond
-       (keyword? form) form
-       (symbol? form) (c/or (->> form (resolve env) ->sym) form)
-       (sequential? form) (walk/postwalk #(if (symbol? %) (res env %) %) (unfn form))
-       :else form)))
+(defn- res [#?(:cljs env) form]
+  (cond
+    (keyword? form) form
+    (symbol? form) (c/or (->> form (resolve #?(:cljs env)) ->sym) form)
+    (sequential? form) (walk/postwalk #(if (symbol? %) (res #?(:cljs env) %) %) (unfn form))
+    :else form))
 
 (defn ^:skip-wiki def-impl
   "Do not call this directly, use 'def'"
@@ -100,14 +92,14 @@
   (get (registry) (if (keyword? k) k (->sym k))))
 
 ;; ---------------------------
-;; ORIGINAL
+;; NUDGE CORE
 
 #?(:clj (defn- resolve-and-get-spec
           [k]
           (-> (if (symbol? k) (resolve k) k)
               get-spec)))
 
-(defn problem->spec
+(defn- problem->spec
   [prob]
   (let [req-missing (c/and (map? (:val prob))
                            (empty? (:path prob)))]
