@@ -99,7 +99,7 @@
           (-> (if (symbol? k) (resolve k) k)
               get-spec)))
 
-(defn- problem->spec
+(defn- prob->msg
   [prob]
   (let [req-missing (c/and (map? (:val prob))
                            (empty? (:path prob)))]
@@ -109,12 +109,10 @@
              :cljs (get-spec (:pred prob)))
           (get-spec 'nudge.defaults/default))))
 
-(defn- problem->msg
+(defn- prob->prop
   [prob]
-  (let [prop (c/or (get-in prob [:path 0])
-                   (-> prob :pred last))
-        spec (problem->spec prob)]
-    {prop [spec]}))
+  (c/or (get-in prob [:path 0])
+        (-> prob :pred last)))
 
 (defn messages
   [spec data]
@@ -123,6 +121,6 @@
                         :cljs :cljs.spec/problems))]
     (if (seq? probs)
       (->> probs
-           (map problem->msg)
+           (map #(hash-map (prob->prop %) [(prob->msg %)]))
            (apply merge))
-      (problem->spec (probs 0)))))
+      (prob->msg (probs 0)))))
