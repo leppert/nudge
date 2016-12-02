@@ -109,7 +109,8 @@
 
 (defn problem->spec
   [prob]
-  (let [req-missing (empty? (:path prob))]
+  (let [req-missing (c/and (map? (:val prob))
+                           (empty? (:path prob)))]
     (c/or (if req-missing (get-spec 'nudge.defaults/key-missing))
           (get-spec (-> prob :via last))
           #?(:clj  (resolve-and-get-spec (:pred prob))
@@ -125,8 +126,11 @@
 
 (defn messages
   [spec data]
-  (->> (s/explain-data spec data)
-       #?(:clj  :clojure.spec/problems
-          :cljs :cljs.spec/problems)
-       (map problem->msg)
-       (apply merge)))
+  (if-let [probs (-> (s/explain-data spec data)
+                     #?(:clj  :clojure.spec/problems
+                        :cljs :cljs.spec/problems))]
+    (if (seq? probs)
+      (->> probs
+           (map problem->msg)
+           (apply merge))
+      (problem->spec (probs 0)))))

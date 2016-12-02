@@ -18,7 +18,12 @@
 
 (deftest core
   (testing "returns nil when the spec passes"
-    (is (= nil (n/messages ::person person))))
+    (is (= nil (n/messages ::person person)))))
 
+(deftest non-maps
+  (testing "returns a string message when the spec doesn't pass"
+    (is (= "must be a valid email address" (n/messages ::email-type "foo@bar")))))
+
+(deftest maps
   (testing "returns a map of messages when the spec doesn't pass"
     (is (= {::id ["can't be blank"]} (n/messages ::person (dissoc person ::id))))))
