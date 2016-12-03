@@ -48,10 +48,10 @@
 
 (defn ^:skip-wiki def-impl
   "Do not call this directly, use 'def'"
-  [k form spec]
+  [k form msg]
   (c/assert (c/and #?(:clj  (named? k)
                       :cljs (ident? k)) (namespace k)) "k must be namespaced keyword or resolvable symbol")
-  (swap! registry-ref assoc k spec)
+  (swap! registry-ref assoc k msg)
   k)
 
 #?(:clj
@@ -73,48 +73,47 @@
        (symbol (str ana/*cljs-ns*) (str s)))))
 
 (defmacro def
-  "Given a namespace-qualified keyword or resolvable symbol k, and a
-  spec, spec-name, predicate or regex-op makes an entry in the
-  registry mapping k to the spec"
-  [k spec-form]
+  "Given a namespace-qualified keyword or resolvable symbol k, and a string message msg
+  makes an entry in the registry mapping k to the msg"
+  [k msg]
   (let [k (if (symbol? k) (ns-qualify #?(:cljs &env) k) k)
-        form (res #?(:cljs &env) spec-form)]
-    `(def-impl '~k '~form ~spec-form)))
+        form (res #?(:cljs &env) msg)]
+    `(def-impl '~k '~form ~msg)))
 
 (defn registry
-  "returns the registry map, prefer 'get-spec' to lookup a spec by name"
+  "returns the registry map, prefer 'get-msg' to lookup a message by name"
   []
   @registry-ref)
 
-(defn get-spec
-  "Returns spec registered for keyword/symbol/var k, or nil."
+(defn get-msg
+  "Returns message registered for keyword/symbol/var k, or nil."
   [k]
   (get (registry) (if (keyword? k) k (->sym k))))
 
 ;; ---------------------------
 ;; NUDGE CORE
 
-#?(:clj (defn- resolve-and-get-spec
+#?(:clj (defn- resolve-and-get-msg
           [k]
           (-> (if (symbol? k) (resolve k) k)
-              get-spec)))
+              get-msg)))
 
 (defn- get-via-spec
   [sym]
-  (if-let [spec (get-spec sym)]
-    spec
-    (if-let [sym (s/get-spec sym)]
-      (get-via-spec sym))))
+  (if-let [msg (get-msg sym)]
+    msg
+    (if-let [spec (s/get-spec sym)]
+      (get-via-spec spec))))
 
 (defn- prob->msg
   [prob]
   (let [req-missing (c/and (map? (:val prob))
                            (empty? (:path prob)))]
-    (c/or (if req-missing (get-spec 'nudge.defaults/key-missing))
+    (c/or (if req-missing (get-msg 'nudge.defaults/key-missing))
           (get-via-spec (-> prob :via last))
-          #?(:clj  (resolve-and-get-spec (:pred prob))
-             :cljs (get-spec (:pred prob)))
-          (get-spec 'nudge.defaults/default))))
+          #?(:clj  (resolve-and-get-msg (:pred prob))
+             :cljs (get-msg (:pred prob)))
+          (get-msg 'nudge.defaults/default))))
 
 (defn- prob->prop
   [prob]
