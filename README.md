@@ -29,11 +29,11 @@ Inspired by Ruby on Rails’ [`model.errors.messages`](http://guides.rubyonrails
 
 ;; An invalid map
 (n/messages ::person {::email "not-a-valid-email"})
-;; => {::name “must be present”
-;;     ::email “must be a valid email address”}
+;; => {::name "must be present"
+;;     ::email "must be a valid email address"}
 
 ;; A valid map
-(n/messages ::person {::name “John Smith” ::email "john@example.com"})
+(n/messages ::person {::name "John Smith" ::email "john@example.com"})
 ;; => nil
 ```
 
@@ -50,11 +50,11 @@ not been explicitly defined.
   (:require [nudge.core :as n]))
 
 (s/def ::email-type string?)
-(n/def ::email-type “must be a valid email address)
+(n/def ::email-type "must be a valid email address")
 (s/def ::email ::email-type)
 
-(n/messages :email-type false) ; => “must be a valid email address”
-(n/messages :email false) ; => “must be a valid email address”
+(n/messages :email-type false) ; => "must be a valid email address"
+(n/messages :email false) ; => "must be a valid email address"
 ```
 
 ## Defaults
@@ -94,9 +94,9 @@ resolve to predicates, like so:
   (:require [clojure.spec :as s]
             [nudge.core as n]))
 
-(n/def string? “must be a string”)
+(n/def string? "must be a string")
 (s/def ::name string?)
-(n/messages ::name 123) ; => “must be a string”
+(n/messages ::name 123) ; => "must be a string"
 ```
 
 A handful of these are defined as defaults in `nudge.defaults`.

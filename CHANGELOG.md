@@ -3,22 +3,13 @@ All notable changes to this project will be documented in this file. This change
 
 ## [Unreleased]
 ### Changed
-- Add a new arity to `make-widget-async` to provide a different widget shape.
+- Nothing yet.
 
-## [0.1.1] - 2016-11-29
-### Changed
-- Documentation on how to make the widgets.
-
-### Removed
-- `make-widget-sync` - we're all async, all the time.
-
-### Fixed
-- Fixed widget maker to keep working when daylight savings switches over.
-
-## 0.1.0 - 2016-11-29
+## [0.1.0] - 2016-12-03
 ### Added
-- Files from the new template.
-- Widget maker public API - `make-widget-sync`.
+- `nudge.core/messages`
+- `nudge.core/explain-data->messages`
+- `nudge.defaults`
 
-[Unreleased]: https://github.com/your-name/nudge/compare/0.1.1...HEAD
-[0.1.1]: https://github.com/your-name/nudge/compare/0.1.0...0.1.1
+[Unreleased]: https://github.com/leppert/nudge/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/leppert/nudge/compare/29a256d...v0.1.0

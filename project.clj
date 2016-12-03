@@ -1,4 +1,4 @@
-(defproject nudge "0.1.0-SNAPSHOT"
+(defproject nudge "0.1.0"
   :description "A Clojure(Script) library for returning user friendly messages from spec explanations."
   :url "https://github.com/leppert/nudge"
   :license {:name "Eclipse Public License"
