@@ -37,6 +37,26 @@ Inspired by Ruby on Rails’ [`model.errors.messages`](http://guides.rubyonrails
 ;; => nil
 ```
 
+## Message Resolution
+
+When a spec problem is encountered, Nudge does it best to look up
+messages by resolving the spec based on available keywords. For
+instance, in the example below because `::email` is an alias for
+`::email-type`, it will return the same message even though one has
+not been explicitly defined.
+
+``` clojure
+(ns foo
+  (:require [nudge.core :as n]))
+
+(s/def ::email-type string?)
+(n/def ::email-type “must be a valid email address)
+(s/def ::email ::email-type)
+
+(n/messages :email-type false) ; => “must be a valid email address”
+(n/messages :email false) ; => “must be a valid email address”
+```
+
 ## Defaults
 
 Default messages are defined in `nudge.defaults` and can be
