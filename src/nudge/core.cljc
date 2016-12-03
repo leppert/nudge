@@ -127,7 +127,7 @@
                         :cljs :cljs.spec/problems))]
     (if (seq? probs)
       (->> probs
-           (map #(hash-map (prob->prop %) [(prob->msg %)]))
+           (map #(hash-map (prob->prop %) (prob->msg %)))
            (apply merge))
       (prob->msg (probs 0)))))
 

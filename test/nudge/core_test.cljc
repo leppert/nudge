@@ -29,4 +29,4 @@
 
 (deftest maps
   (testing "returns a map of messages when the spec doesn't pass"
-    (is (= {::id ["can't be blank"]} (n/messages ::person (dissoc person ::id))))))
+    (is (= {::id "can't be blank"} (n/messages ::person (dissoc person ::id))))))

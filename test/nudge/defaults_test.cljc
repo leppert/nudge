@@ -17,14 +17,14 @@
 
 (deftest defaults
   (testing "default"
-    (is (= {::id ["did not meet a requirement"]}
+    (is (= {::id "did not meet a requirement"}
            (n/messages ::person (assoc person ::id 2)))))
   (testing "key-missing"
-    (is (= {::name ["can't be blank"]}
+    (is (= {::name "can't be blank"}
            (n/messages ::person (dissoc person ::name))))))
 
 #?(:clj
    (deftest clj-defaults
      (testing "string?"
-       (is (= {::name ["must be a string"]}
+       (is (= {::name "must be a string"}
               (n/messages ::person (assoc person ::name nil)))))))

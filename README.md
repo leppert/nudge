@@ -29,8 +29,8 @@ Inspired by Ruby on Rails’ [`model.errors.messages`](http://guides.rubyonrails
 
 ;; An invalid map
 (n/messages ::person {::email "not-a-valid-email"})
-;; => {::name [“must be present”]
-;;     ::email [“must be a valid email address”]}
+;; => {::name “must be present”
+;;     ::email “must be a valid email address”}
 
 ;; A valid map
 (n/messages ::person {::name “John Smith” ::email "john@example.com"})
