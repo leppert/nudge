@@ -7,6 +7,12 @@ error messages that might be useful to an end user.
 
 Inspired by Ruby on Rails’ [`model.errors.messages`](http://guides.rubyonrails.org/active_record_validations.html#working-with-validation-errors-errors).
 
+[![Clojars Project](https://img.shields.io/clojars/v/nudge.svg)](https://clojars.org/nudge)
+
+```clojure
+[nudge "0.1.0"]
+```
+
 ## Usage
 
 ``` clojure
