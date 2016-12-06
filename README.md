@@ -59,8 +59,8 @@ not been explicitly defined.
 (n/def ::email-type "must be a valid email address")
 (s/def ::email ::email-type)
 
-(n/messages :email-type false) ; => "must be a valid email address"
-(n/messages :email false) ; => "must be a valid email address"
+(n/messages ::email-type false) ; => "must be a valid email address"
+(n/messages ::email false) ; => "must be a valid email address"
 ```
 
 ## Defaults
