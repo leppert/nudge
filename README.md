@@ -18,7 +18,7 @@ Inspired by Ruby on Rails’ [`model.errors.messages`](http://guides.rubyonrails
 ``` clojure
 (ns foo
   (:require [clojure.spec :as s]
-            [nudge.core as n]
+            [nudge.core :as n]
             [nudge.defaults]))
 
 (def email-regex #"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,63}$")
