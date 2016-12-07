@@ -26,7 +26,8 @@ Inspired by Ruby on Rails’ [`model.errors.messages`](http://guides.rubyonrails
 
 ;; nudge.core/def defines the nudge message to be returned in the
 ;; event the data structure fails to pass the spec.
-;; Nudge keeps a global registry of these messages, just like clojure.spec.
+;; Nudge keeps a global registry of these messages, just like
+;; clojure.spec does for specs.
 (n/def ::email-type "must be a valid email address")
 (s/def ::email ::email-type)
 
