@@ -46,11 +46,11 @@ Inspired by Ruby on Rails’ [`model.errors.messages`](http://guides.rubyonrails
 
 ## Message Resolution
 
-When a spec problem is encountered, Nudge does it best to look up
+When a spec problem is encountered, Nudge does its best to look up
 messages by resolving the spec based on available keywords. For
-instance, in the example below because `::email` is an alias for
-`::email-type`, it will return the same message even though one has
-not been explicitly defined.
+instance, in the example below you can see that because `::email`
+is an alias for `::email-type` it will return the same message
+even though it was not explicitly defined.
 
 ``` clojure
 (ns foo
@@ -79,7 +79,7 @@ Both the Clojure and ClojureScript implementations provide two special
 default symbols that can be overridden:
 
 - `nudge.defaults/default`: returned when no message has been
-specified for a failing predicate
+  specified for a failing predicate
 - `nudge.defaults/key-missing`: returned when a map key has been
   specified as required in a map spec but that key is missing
 
